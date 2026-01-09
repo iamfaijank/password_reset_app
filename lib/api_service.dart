@@ -49,12 +49,10 @@ class ApiService {
 
   Future<bool> isLoggedIn() async {
     if (kIsWeb) {
-      try {
-        final response = await _dio.get('/api/method/frappe.auth.get_logged_user');
-        return response.statusCode == 200 && response.data['message'] != 'Guest';
-      } catch (e) {
-        return false;
-      }
+      // On web, we cannot reliably check for a session without a universally whitelisted endpoint.
+      // We will assume the user is logged out and let them log in.
+      // The session will be maintained by the browser's cookies for subsequent requests.
+      return Future.value(false);
     } else {
       final cookies = await _cookieJar.loadForRequest(Uri.parse(_baseUrl));
       return cookies.any((c) => c.name == 'sid');

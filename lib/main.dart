@@ -276,20 +276,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Password Reset'),
-        actions: [
-          const Center(child: BlinkingStatusDot(color: Colors.green, size: 15.0)),
-          const SizedBox(width: 8),
-          TextButton.icon(
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            ),
-            icon: const Icon(Icons.logout),
-            label: const Text('Logout'),
-            onPressed: () async {
-              await widget.apiService.logout();
-              widget.onLogout();
-            },
-          ),
+        actions: const [
+          Center(child: BlinkingStatusDot(color: Colors.green, size: 15.0)),
+          SizedBox(width: 8),
         ],
       ),
       body: Padding(
@@ -300,9 +289,25 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
             if (userFullName != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
-                child: Text(
-                  'Welcome, $userFullName!',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Welcome, $userFullName!',
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    TextButton.icon(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.black, // Set color to black
+                      ),
+                      icon: const Icon(Icons.logout, color: Colors.black), // Icon also black
+                      label: const Text('Logout', style: TextStyle(color: Colors.black)),
+                      onPressed: () async {
+                        await widget.apiService.logout();
+                        widget.onLogout();
+                      },
+                    ),
+                  ],
                 ),
               ),
             TextField(

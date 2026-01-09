@@ -13,14 +13,17 @@ class ApiService {
   final String _baseUrl = 'https://mysahayog.com';
   late Dio _dio;
   late CookieJar _cookieJar;
+  String? _loggedInUserFullName; // New property to store full name
 
   ApiService();
+
+  String? get loggedInUserFullName => _loggedInUserFullName;
 
   Future<void> init() async {
     _dio = Dio(BaseOptions(
       baseUrl: _baseUrl,
-      connectTimeout: const Duration(seconds: 5),
-      receiveTimeout: const Duration(seconds: 3),
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 20),
     ));
 
     if (kIsWeb) {
@@ -61,10 +64,13 @@ class ApiService {
 
   Future<void> login(String usr, String pwd) async {
     try {
-      await _dio.post(
+      final response = await _dio.post(
         '/api/method/login',
         data: {'usr': usr, 'pwd': pwd},
       );
+      if (response.statusCode == 200 && response.data != null) {
+        _loggedInUserFullName = response.data['full_name'];
+      }
     } on DioException catch (e) {
       log('Login Error: $e');
       throw Exception('Failed to connect to the server: ${e.message}');

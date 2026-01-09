@@ -271,6 +271,8 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String? userFullName = widget.apiService.loggedInUserFullName;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Password Reset'),
@@ -295,6 +297,14 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (userFullName != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Text(
+                  'Welcome, $userFullName!',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
             TextField(
               controller: _empIdController,
               keyboardType: TextInputType.number,

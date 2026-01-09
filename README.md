@@ -15,3 +15,13 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 # password_reset_app
+
+Run fluter command:
+
+1. basic command
+flutter clean
+flutter pub get
+flutter build apk --release
+
+2.flutter run -d chrome --web-browser-flag "--disable-web-security"
+

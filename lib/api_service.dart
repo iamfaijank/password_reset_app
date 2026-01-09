@@ -72,7 +72,9 @@ class ApiService {
   }
 
   Future<void> logout() async {
-    await _cookieJar.deleteAll();
+    if (!kIsWeb) {
+      await _cookieJar.deleteAll();
+    }
     try {
       await _dio.post('/api/method/logout');
     } on DioException catch (e) {
@@ -98,7 +100,7 @@ class ApiService {
       }
     } on DioException catch (e) {
       log('getUserDetails Error: $e');
-      throw Exception('Failed to connect to the server: ${e.message}');
+      throw Exception(e.message);
     }
   }
 
@@ -113,7 +115,7 @@ class ApiService {
       );
     } on DioException catch (e) {
       log('resetUserPassword Error: $e');
-      throw Exception('Failed to connect to the server: ${e.message}');
+      throw Exception(e.message);
     }
   }
 }

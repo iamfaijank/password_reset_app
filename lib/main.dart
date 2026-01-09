@@ -110,6 +110,19 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Container(
+              width: 15.0,
+              height: 15.0,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -173,6 +186,16 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   String _statusMessage = '';
   Map<String, dynamic>? _userDetails;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User is logged in now')),
+      );
+    });
+  }
 
   Future<void> _getUserDetails() async {
     if (_empIdController.text.isEmpty) {
@@ -252,8 +275,14 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
       appBar: AppBar(
         title: const Text('Password Reset'),
         actions: [
-          IconButton(
+          const Center(child: BlinkingStatusDot(color: Colors.green, size: 15.0)),
+          const SizedBox(width: 8),
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            ),
             icon: const Icon(Icons.logout),
+            label: const Text('Logout'),
             onPressed: () async {
               await widget.apiService.logout();
               widget.onLogout();
@@ -320,6 +349,51 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
               ),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class BlinkingStatusDot extends StatefulWidget {
+  final Color color;
+  final double size;
+
+  const BlinkingStatusDot({super.key, required this.color, this.size = 15.0});
+
+  @override
+  State<BlinkingStatusDot> createState() => _BlinkingStatusDotState();
+}
+
+class _BlinkingStatusDotState extends State<BlinkingStatusDot>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        width: widget.size,
+        height: widget.size,
+        decoration: BoxDecoration(
+          color: widget.color,
+          shape: BoxShape.circle,
         ),
       ),
     );
